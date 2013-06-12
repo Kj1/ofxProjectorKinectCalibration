@@ -1,0 +1,22 @@
+%YAML:1.0
+intrisics: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [ 1.7196213194279969e+003, 0., 6.7998097908432612e+002, 0.,
+       1.7311447337573279e+003, 1.6602563066824558e+001, 0., 0., 1. ]
+projResX: 1280
+projResY: 800
+rotation: !!opencv-matrix
+   rows: 3
+   cols: 1
+   dt: d
+   data: [ -3.2927819372230410e-001, -9.6956608661126889e-002,
+       -3.9699287427362666e-002 ]
+translation: !!opencv-matrix
+   rows: 3
+   cols: 1
+   dt: d
+   data: [ -2.4109702691267984e-002, -2.3143947262755421e-001,
+       1.2967032550142896e-002 ]
+reprojectionError: 3.4832663536071777e+000
