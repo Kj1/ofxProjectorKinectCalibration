@@ -2,6 +2,7 @@ ofxProjectorKinectCalibration
 =============================
 
 Openframeworks addon for calibrating a kinect and a projector, currently work in progress
+info: http://forum.openframeworks.cc/index.php?topic=12712.0
 
 used addons: 
 - ofxCv
