@@ -7,6 +7,7 @@ info: http://forum.openframeworks.cc/index.php?topic=12712.0
 used addons: 
 - ofxCv
 - ofxOpenCv
+
 Kinect Backends:
 - ofxKinectNui (supported)
 - ofxKinect    (not yet)
