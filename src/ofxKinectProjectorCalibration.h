@@ -15,6 +15,6 @@
 #include "KinectProjectorOutput.h"
 
 //pick your backend
-#include "RGBDCamCalibWrapperOfxKinectNUI.h"
+//#include "RGBDCamCalibWrapperOfxKinectNUI.h"
 //#include "RGBDCamCalibWrapperOfxKinect.h"
 //#include "RGBDCamCalibWrapperOfxOpenNi.h"
