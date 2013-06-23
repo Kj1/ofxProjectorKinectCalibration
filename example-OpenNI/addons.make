@@ -1,0 +1,7 @@
+ofxXmlSettings
+ofxUI
+ofxFenster
+ofxOpenNI
+ofxOpenCv
+ofxOCv
+ofxProjectorKinectCalibration
