@@ -22,7 +22,6 @@ KinectProjectorCalibration::KinectProjectorCalibration() {
 	projectorResolutionY = 800;
 	chessboardBlocksX = 8;
 	chessboardBlocksY = 6;
-	chessboardSize = 0.75;
 	reprojError = -1;
 	//not ready yet, first need to call setup(..)
 	isReady = false;
@@ -30,8 +29,10 @@ KinectProjectorCalibration::KinectProjectorCalibration() {
 
 	chessboardFound = false;
 	fastCheckResize = 0.5;
+    chessboardSize = 200;
 	chessboardColor = 125;
 	kinectColorImage.allocate(640,480);
+    hasToBeStableFor = 2000;
 	stableFrom = -1;
 }
 
@@ -68,7 +69,7 @@ bool	KinectProjectorCalibration::doFastCheck(){
 			pointBufFastCheck.push_back((1.0/fastCheckResize) * toOf(pointBuf[i]));
 		}
 		//cout << "Stable: " << (ofGetElapsedTimeMillis() - stableFrom) << endl;
-		return (ofGetElapsedTimeMillis() - stableFrom > 2000) ;
+		return (ofGetElapsedTimeMillis() - stableFrom > hasToBeStableFor) ;
 	} else {
 		stableFrom = -1;
 		return false;
@@ -133,7 +134,7 @@ void	KinectProjectorCalibration::addCurrentFrame(){
 			imageCoordinatesChessboard.push_back(Point2f(imageCoordinatesChessboardInternal[i].x, imageCoordinatesChessboardInternal[i].y));
 		}
 		if (valid) {
-			//add to our list off valid pints
+			//add to our list of valid points
 			worldCoordinatesChessboardBuffer.push_back(worldCoordinatesChessboard);
 			kinectCoordinatesChessboardBuffer.push_back(kinectCoordinatesChessboard);
 			imageCoordinatesChessboardBuffer.push_back(imageCoordinatesChessboard);
@@ -169,7 +170,7 @@ bool	KinectProjectorCalibration::calibrate()
 	if(b_CV_CALIB_RATIONAL_MODEL) flags += CV_CALIB_RATIONAL_MODEL; 
 		
 
-	//THIS IS NEEDED BECAUSE IT WONT WORK OHTERWISE
+	//THIS IS NEEDED BECAUSE IT WONT WORK OTHERWISE
 	vector<vector<Point3f> > vvo(1); //object points
 	vector<vector<Point2f> > vvi(1); //image points
 	for (int i=0; i<worldCoordinatesChessboardBuffer.size(); ++i) {
@@ -206,7 +207,6 @@ bool	KinectProjectorCalibration::calibrate()
 	}
 	
 	//debug output
-	cout << " " << endl;
 	cout << " " << endl;
 	cout << "RMS: " << reprojError << endl;	
 	cout << "Camera matrix" << endl;	
@@ -282,6 +282,10 @@ int KinectProjectorCalibration::getDatabaseSize() {
 	return worldCoordinatesChessboardBuffer.size();
 }
 
+void KinectProjectorCalibration::setStabilityTimeInMs(int stabilityTime) {
+    hasToBeStableFor = stabilityTime;
+}
+
 void KinectProjectorCalibration::save(string filename, bool absolute) const {
 	if (worldCoordinatesChessboardBuffer.size() < 1) { 
 		return;
@@ -311,7 +315,7 @@ void	KinectProjectorCalibration::drawChessboardDebug(float x, float y, float wid
 
 	//set the chessboard
 	chessboard.setPatternBlocks(chessboardBlocksX, chessboardBlocksY);
-	chessboard.setPatternSize(chessboardSize);
+	chessboard.setPatternSize((float)chessboardSize / 255.0);
 	chessboard.setProjectorResolution(projectorResolutionX, projectorResolutionY);
 	
 	//draw
@@ -375,7 +379,7 @@ void	KinectProjectorCalibration::drawProcessedInputDebug(float x, float y, float
 		}
 	}		
 	if (stableFrom != -1)
-		ofDrawBitmapStringHighlight(ofToString((int)(2000 - ofGetElapsedTimeMillis() + stableFrom)) + " ms to capture...", 20,20);
+		ofDrawBitmapStringHighlight(ofToString((int)(hasToBeStableFor - ofGetElapsedTimeMillis() + stableFrom)) + " ms to capture...", 20,20);
 	ofPopStyle();
 	ofPopMatrix();
 	ofSetColor(255,255,255,255);
