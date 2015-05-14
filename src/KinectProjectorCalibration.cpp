@@ -222,18 +222,21 @@ bool	KinectProjectorCalibration::calibrate()
 	return true;
 }
 
-bool KinectProjectorCalibration::clean(float minReprojectionError) {
+bool KinectProjectorCalibration::clean(float maxReprojectionError) {
 	if (!calibrated) return false;
 	calibrated = false;
 	int removed = 0;
 	for(int i = worldCoordinatesChessboardBuffer.size() - 1; i >= 0; i--) {
-		if(getReprojectionError(i) > minReprojectionError) {
+		if(getReprojectionError(i) > maxReprojectionError) {
 			worldCoordinatesChessboardBuffer.erase(worldCoordinatesChessboardBuffer.begin() + i);
 			kinectCoordinatesChessboardBuffer.erase(kinectCoordinatesChessboardBuffer.begin() + i);
 			imageCoordinatesChessboardBuffer.erase(imageCoordinatesChessboardBuffer.begin() + i);
 			removed++;
+            //ofLog(OF_LOG_VERBOSE, "Point erased.");
+            //ofLog(OF_LOG_VERBOSE, "Size of buffer is : %i", worldCoordinatesChessboardBuffer.size());
 		}
 	}
+    
 	if(worldCoordinatesChessboardBuffer.size() > 0) {
 		if(removed > 0) {
 			return calibrate();

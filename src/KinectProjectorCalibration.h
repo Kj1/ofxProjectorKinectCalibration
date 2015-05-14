@@ -42,7 +42,7 @@ class KinectProjectorCalibration {
 		//enable/disable calibration and adding images
 		void	addCurrentFrame();
 		bool	calibrate();
-		bool	clean(float minReprojectionError = 2.f);
+		bool	clean(float maxReprojectionError = 2.f);
 		void    clearAll();
 				
 		//save

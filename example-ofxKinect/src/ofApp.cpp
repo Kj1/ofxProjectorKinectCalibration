@@ -43,7 +43,10 @@ void ofApp::setup(){
     RGBDCamCalibWrapper* kinectWrapper = new RGBDCamCalibWrapperOfxKinect();
     kinectWrapper->setup(&kinect);
     kinectProjectorCalibration.setup(kinectWrapper, projectorWidth, projectorHeight);
-    kinectProjectorCalibration.setStabilityTimeInMs(300);
+    
+    // some default config
+    kinectProjectorCalibration.setStabilityTimeInMs(700);
+    maxReprojError = 2.0f;
     
     // sets the output
     kinectProjectorOutput.setup(kinectWrapper, projectorWidth, projectorHeight);
@@ -241,35 +244,41 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 void ofApp::setupGui() {
     
     float dim = 16;
-    float xInit = OFX_UI_GLOBAL_WIDGET_SPACING;
-    float length = 300-xInit;
+    float length = 300;
     
-    gui = new ofxUISuperCanvas("Kinect Projector Calibration");
+    gui = new ofxUISuperCanvas("- ofxKinect example -");
     gui->setColorBack(ofColor(51, 55, 56, 200));
     
-    gui->addWidgetDown(new ofxUILabel("CALIBRATION INSTRUCTIONS", OFX_UI_FONT_LARGE));
-    gui->addSpacer(length-xInit, 2);
+    gui->addSpacer(length, 2);
+    gui->addWidgetDown(new ofxUILabel("Calibration instructions", OFX_UI_FONT_MEDIUM));
+    gui->addSpacer(length, 2);
     gui->addWidgetDown(new ofxUILabel("sdf", "1) Move 2nd window to projector", OFX_UI_FONT_SMALL));
-    gui->addWidgetDown(new ofxUILabel("sdf", "2) Press f to go fullscreen", OFX_UI_FONT_SMALL));
+    gui->addWidgetDown(new ofxUILabel("sdf", "2) Set it to fullscreen", OFX_UI_FONT_SMALL));
     gui->addWidgetDown(new ofxUILabel("sdf", "3) Activate calibration", OFX_UI_FONT_SMALL));
     gui->addWidgetDown(new ofxUILabel("sdf", "4) Hold flat board ", OFX_UI_FONT_SMALL));
-    gui->addWidgetDown(new ofxUILabel("sdf", "5) Keep still for 2 seconds to make capture", OFX_UI_FONT_SMALL));
-    gui->addWidgetDown(new ofxUILabel("sdf", "6) Make 15 captures, then clean the highest errors", OFX_UI_FONT_SMALL));
+    gui->addWidgetDown(new ofxUILabel("sdf", "5) Keep still during some time to capture", OFX_UI_FONT_SMALL));
+    gui->addWidgetDown(new ofxUILabel("sdf", "6) Make 15 captures, then clean the dataset", OFX_UI_FONT_SMALL));
     
-    gui->addWidgetDown(new ofxUILabel(" ", OFX_UI_FONT_LARGE));
-    gui->addWidgetDown(new ofxUILabel("Chessboard settings", OFX_UI_FONT_LARGE));
-    gui->addSpacer(length-xInit, 2);
-    gui->addWidgetDown(new ofxUIBiLabelSlider(length,0,255,&kinectProjectorCalibration.chessboardSize,"boardsize","Small","Large"));
-    gui->addWidgetDown(new ofxUIBiLabelSlider(length,0,255,&kinectProjectorCalibration.chessboardColor,"boardColor","dark","light"));
+    gui->addWidgetDown(new ofxUILabel(" ", OFX_UI_FONT_MEDIUM));
+    gui->addWidgetDown(new ofxUILabel("Mode", OFX_UI_FONT_MEDIUM));
+    gui->addSpacer(length, 2);
+    gui->addWidgetDown(new ofxUIToggle("Activate calibration mode", &enableCalibration, dim, dim));
+    gui->addWidgetDown(new ofxUIToggle("Activate test mode", &enableTestmode, dim, dim));
     
-    gui->addWidgetDown(new ofxUIBiLabelSlider(length,0,255,&threshold,"threshold","None","Full"));
+    gui->addWidgetDown(new ofxUILabel(" ", OFX_UI_FONT_MEDIUM));
+    gui->addWidgetDown(new ofxUILabel("Chessboard settings", OFX_UI_FONT_MEDIUM));
+    gui->addSpacer(length, 2);
+    gui->addWidgetDown(new ofxUIMinimalSlider("Board size", 0, 255, &kinectProjectorCalibration.chessboardSize, length, dim));
+    gui->addWidgetDown(new ofxUIMinimalSlider("Board luminosity", 0, 255, &kinectProjectorCalibration.chessboardColor, length, dim));
+    gui->addWidgetDown(new ofxUIMinimalSlider("Kinect depth threshold", 0, 255, &threshold, length, dim));
+    gui->addWidgetDown(new ofxUIMinimalSlider("Max reproj. error", 0.50, 5.00, &maxReprojError, length, dim));
     
     gui->addWidgetDown(new ofxUIToggle("CV_CALIB_CB_ADAPTIVE_THRESH",&kinectProjectorCalibration.b_CV_CALIB_CB_ADAPTIVE_THRESH, dim, dim));
     gui->addWidgetDown(new ofxUIToggle("CV_CALIB_CB_NORMALIZE_IMAGE",&kinectProjectorCalibration.b_CV_CALIB_CB_NORMALIZE_IMAGE, dim, dim));
     
-    gui->addWidgetDown(new ofxUILabel(" ", OFX_UI_FONT_LARGE));
-    gui->addWidgetDown(new ofxUILabel("Calibration settings", OFX_UI_FONT_LARGE));
-    gui->addSpacer(length-xInit, 2);
+    gui->addWidgetDown(new ofxUILabel(" ", OFX_UI_FONT_MEDIUM));
+    gui->addWidgetDown(new ofxUILabel("Calibration settings", OFX_UI_FONT_MEDIUM));
+    gui->addSpacer(length, 2);
     gui->addWidgetDown(new ofxUIToggle("CV_CALIB_FIX_PRINCIPAL_POINT",&kinectProjectorCalibration.b_CV_CALIB_FIX_PRINCIPAL_POINT, dim, dim));
     gui->addWidgetDown(new ofxUIToggle("CV_CALIB_FIX_ASPECT_RATIO",&kinectProjectorCalibration.b_CV_CALIB_FIX_ASPECT_RATIO, dim, dim));
     gui->addWidgetDown(new ofxUIToggle("CV_CALIB_ZERO_TANGENT_DIST",&kinectProjectorCalibration.b_CV_CALIB_ZERO_TANGENT_DIST, dim, dim));
@@ -278,20 +287,17 @@ void ofApp::setupGui() {
     gui->addWidgetDown(new ofxUIToggle("CV_CALIB_FIX_K3",&kinectProjectorCalibration.b_CV_CALIB_FIX_K3, dim, dim));
     gui->addWidgetDown(new ofxUIToggle("CV_CALIB_RATIONAL_MODEL",&kinectProjectorCalibration.b_CV_CALIB_RATIONAL_MODEL, dim, dim));
     
-    gui->addWidgetDown(new ofxUILabel(" ", OFX_UI_FONT_LARGE));
-    gui->addWidgetDown(new ofxUILabel("Calibration", OFX_UI_FONT_LARGE));
-    gui->addSpacer(length-xInit, 2);
-    gui->addWidgetDown(new ofxUIToggle("Activate calibration mode", &enableCalibration, dim, dim));
-    gui->addWidgetDown(new ofxUIButton("Clean dataset (remove > 2 rpr error)", false, dim, dim));
-    gui->addWidgetDown(new ofxUIButton("Clean dataset (remove all)", false, dim, dim));
+    gui->addWidgetDown(new ofxUILabel(" ", OFX_UI_FONT_MEDIUM));
+    gui->addWidgetDown(new ofxUILabel("Calibration", OFX_UI_FONT_MEDIUM));
+    gui->addSpacer(length, 2);
+    gui->addWidgetDown(new ofxUIButton("Clean dataset (remove > max reproj error)", false, dim, dim));
+    gui->addWidgetDown(new ofxUIButton("Clear dataset (remove all)", false, dim, dim));
     gui->addWidgetDown(new ofxUILabel(" ", OFX_UI_FONT_LARGE));
     gui->addWidgetDown(new ofxUILabel("errorLabel", "Avg Reprojection error: 0.0", OFX_UI_FONT_SMALL));
     gui->addWidgetDown(new ofxUILabel("capturesLabel", "Number of captures: 0", OFX_UI_FONT_SMALL));
     
-    gui->addWidgetDown(new ofxUILabel(" ", OFX_UI_FONT_LARGE));
-    gui->addWidgetDown(new ofxUILabel("Test", OFX_UI_FONT_LARGE));
-    gui->addSpacer(length-xInit, 2);
-    gui->addWidgetDown(new ofxUIToggle("Activate test mode", &enableTestmode, dim, dim));
+    gui->addWidgetDown(new ofxUILabel(" ", OFX_UI_FONT_MEDIUM));
+    gui->addSpacer(length, 2);
     gui->addWidgetDown(new ofxUIFPS(OFX_UI_FONT_MEDIUM));
     
     gui->autoSizeToFitWidgets();
@@ -314,9 +320,9 @@ void ofApp::guiUpdateLabels() {
 void ofApp::guiEvent(ofxUIEventArgs &e) {
     string name = e.widget->getName();
     int kind = e.widget->getKind();
-    if (name == "Clean dataset (remove > 2 rpr error)") {
+    if (name == "Clean dataset (remove > max reproj error)") {
         ofxUIButton* b = (ofxUIButton*)e.widget;
-        if(b->getValue()) kinectProjectorCalibration.clean();
+        if(b->getValue()) kinectProjectorCalibration.clean(maxReprojError);
         
     } else if (name == "Activate test mode") {
         ofxUIButton* b = (ofxUIButton*)e.widget;

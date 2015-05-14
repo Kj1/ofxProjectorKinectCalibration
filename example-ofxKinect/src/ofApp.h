@@ -53,20 +53,21 @@ class ofApp : public ofBaseApp{
         KinectProjectorOutput		kinectProjectorOutput;
         bool						enableTestmode;
         
-        float threshold;
-        
+        float                       threshold;
+        float                       maxReprojError;
+    
         // settings
-        int projectorWidth;
-        int projectorHeight;
+        int                         projectorWidth;
+        int                         projectorHeight;
         
         // gui
         void setupGui();
-        ofxUICanvas *gui;
+        ofxUICanvas *               gui;
         void guiEvent(ofxUIEventArgs &e);
         void guiUpdateLabels();
         
         // second window
         void setupSecondWindow();
-        ofxSecondWindow secondWindow;
+        ofxSecondWindow             secondWindow;
 		
 };
