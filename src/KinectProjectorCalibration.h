@@ -39,10 +39,10 @@ class KinectProjectorCalibration {
 		bool			doFastCheck();		//does a fast check on resized frame
 		vector<ofVec2f> getFastCheckResults();
 
-		//enable/disable calibraiton and adding images
+		//enable/disable calibration and adding images
 		void	addCurrentFrame();
 		bool	calibrate();
-		bool	clean(float minReprojectionError = 2.f);
+		bool	clean(float maxReprojectionError = 2.f);
 		void    clearAll();
 				
 		//save
@@ -51,6 +51,7 @@ class KinectProjectorCalibration {
 		//getters & setters		
 		float	getReprojectionError() const;
 		int		getDatabaseSize();
+        void    setStabilityTimeInMs(int stabilityTime);
 
 		//Gui stuff
 		void	drawChessboard();
@@ -71,7 +72,6 @@ class KinectProjectorCalibration {
 		
 		//project 
 		vector<ofVec2f> project(vector<Point3f> wrldSrc, int i) const;
-		
 
 
 		//other
@@ -84,6 +84,7 @@ class KinectProjectorCalibration {
 		bool				chessboardFound;
 		vector<ofVec2f>		pointBufFastCheck;
 		float				fastCheckResize;
+        int                 hasToBeStableFor;
 		long				stableFrom;
 
 		//calibrationResults
