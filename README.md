@@ -10,13 +10,13 @@ used addons:
 
 Kinect Backends:
 - ofxKinectNui (supported)
-- ofxKinect    (not yet)
-- ofxOpenNi    (not yet)
+- ofxKinect    (supported)
+- ofxOpenNi    (supported)
 
-For the example
+For the examples
 - the above
-- ofxFenster
-- ofxKinectNui
+- ofxFenster (OpenNI and KinectNUI examples, for OF [0.7]) OR ofxSecondWindow (ofxKinect example, for OF [0.8])
+- one of the supported kinect backends (see above)
 - ofxUi
 - ofxXmlSettings
 
