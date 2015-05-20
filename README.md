@@ -1,7 +1,3 @@
-Some work in progress in order to support ofxKinect and run with the latest version of OpenFrameworks [0.8.4] using ofxFenster's child, [ofxSecondWindow](https://github.com/genekogan/ofxSecondWindow).
-
-Original description :
-
 ofxProjectorKinectCalibration
 =============================
 
@@ -14,13 +10,13 @@ used addons:
 
 Kinect Backends:
 - ofxKinectNui (supported)
-- ofxKinect    (working on it)
-- ofxOpenNi    (not yet)
+- ofxKinect    (supported)
+- ofxOpenNi    (supported)
 
 For the example
 - the above
 - ofxSecondWindow
-- ofxKinectNui
+- one of the supported kinect backends (see above)
 - ofxUi
 - ofxXmlSettings
 
