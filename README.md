@@ -13,9 +13,9 @@ Kinect Backends:
 - ofxKinect    (supported)
 - ofxOpenNi    (supported)
 
-For the example
+For the examples
 - the above
-- ofxSecondWindow
+- ofxFenster (OpenNI and KinectNUI examples, for OF [0.7]) OR ofxSecondWindow (ofxKinect example, for OF [0.8])
 - one of the supported kinect backends (see above)
 - ofxUi
 - ofxXmlSettings
