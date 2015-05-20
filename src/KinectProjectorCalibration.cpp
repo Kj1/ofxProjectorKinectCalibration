@@ -224,7 +224,6 @@ bool	KinectProjectorCalibration::calibrate()
 
 bool KinectProjectorCalibration::clean(float maxReprojectionError) {
 	if (!calibrated) return false;
-	calibrated = false;
 	int removed = 0;
 	for(int i = worldCoordinatesChessboardBuffer.size() - 1; i >= 0; i--) {
 		if(getReprojectionError(i) > maxReprojectionError) {
@@ -232,8 +231,6 @@ bool KinectProjectorCalibration::clean(float maxReprojectionError) {
 			kinectCoordinatesChessboardBuffer.erase(kinectCoordinatesChessboardBuffer.begin() + i);
 			imageCoordinatesChessboardBuffer.erase(imageCoordinatesChessboardBuffer.begin() + i);
 			removed++;
-            //ofLog(OF_LOG_VERBOSE, "Point erased.");
-            //ofLog(OF_LOG_VERBOSE, "Size of buffer is : %i", worldCoordinatesChessboardBuffer.size());
 		}
 	}
     
@@ -245,6 +242,7 @@ bool KinectProjectorCalibration::clean(float maxReprojectionError) {
 		}
 	} else {
 		ofLog(OF_LOG_ERROR, "KinectProjectorCalibration::clean() removed the last object/image point pair");
+        calibrated = false;
 		return false;
 	}
 }
