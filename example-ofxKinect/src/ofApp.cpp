@@ -7,8 +7,8 @@ using namespace cv;
 void ofApp::setup(){
     
     // settings and defaults
-    projectorWidth = 800;
-    projectorHeight = 600;
+    projectorWidth = 1920;
+    projectorHeight = 1080;
     enableCalibration = false;
     enableTestmode	  = true;
     

@@ -52,6 +52,7 @@ class KinectProjectorCalibration {
 		float	getReprojectionError() const;
 		int		getDatabaseSize();
         void    setStabilityTimeInMs(int stabilityTime);
+        void    setChessboardTranslation(float x, float y);
 
 		//Gui stuff
 		void	drawChessboard();

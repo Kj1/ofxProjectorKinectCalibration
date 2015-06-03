@@ -18,8 +18,8 @@ KinectProjectorCalibration::KinectProjectorCalibration() {
 	b_CV_CALIB_CB_ADAPTIVE_THRESH = true;
 	b_CV_CALIB_CB_NORMALIZE_IMAGE = false;
 	b_CV_CALIB_CB_FAST_CHECK = true;
-	projectorResolutionX = 1280;
-	projectorResolutionY = 800;
+	projectorResolutionX = 1920;
+	projectorResolutionY = 1080;
 	chessboardBlocksX = 8;
 	chessboardBlocksY = 6;
 	reprojError = -1;
@@ -285,6 +285,10 @@ int KinectProjectorCalibration::getDatabaseSize() {
 
 void KinectProjectorCalibration::setStabilityTimeInMs(int stabilityTime) {
     hasToBeStableFor = stabilityTime;
+}
+
+void KinectProjectorCalibration::setChessboardTranslation(float x, float y) {
+	chessboard.setTranslation(x, y);
 }
 
 void KinectProjectorCalibration::save(string filename, bool absolute) const {
