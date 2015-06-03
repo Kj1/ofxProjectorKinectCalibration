@@ -1,6 +1,7 @@
 /** OFXKINECTPROJECTORCALIBRATION **/
 /** work in progress, not even beta! **/
 /** Kj1, www.hangaar.net **/
+/** Additions by FelixDz **/
 
 #pragma once
 
@@ -37,10 +38,10 @@ public:
 		ofRect(0,0,projectorWidth,projectorHeight);
 		float xstep = projectorWidth / chessboardSizeX * scale;
 		float ystep = projectorHeight / chessboardSizeY * scale;	
-		float xInset = (projectorWidth - (projectorWidth * scale)) / 2.0f;
-		float yInset = (projectorHeight - (projectorHeight * scale)) / 2.0f;
-        //float xInset = ((projectorWidth - (projectorWidth * scale)) / 2.0f) + chessboardTranslateX;
-        //float yInset = ((projectorHeight - (projectorHeight * scale)) / 2.0f) + chessboardTranslateY;
+		//float xInset = (projectorWidth - (projectorWidth * scale)) / 2.0f;
+		//float yInset = (projectorHeight - (projectorHeight * scale)) / 2.0f;
+        float xInset = ((projectorWidth - (projectorWidth * scale)) / 2.0f) + chessboardTranslateX;
+        float yInset = ((projectorHeight - (projectorHeight * scale)) / 2.0f) + chessboardTranslateY;
 		for (int i=0; i<chessboardSizeX; ++i) {
 			for (int j=0; j<chessboardSizeY; ++j) {			
 				if (i%2 == j%2)
@@ -85,10 +86,10 @@ public:
 			for (int i=1; i<chessboardSizeX; ++i) {
 				corner = inset + step * ofVec2f(i, -j);
 				corner *= scale;
-                xyPix.x = (corner.x + 1.0f) / 2.0f * projectorWidth;
-                xyPix.y = (1.0f - corner.y) / 2.0f * projectorHeight;
-				//xyPix.x = ((corner.x + 1.0f) / 2.0f * projectorWidth) + chessboardTranslateX;
-				//xyPix.y = ((1.0f - corner.y) / 2.0f * projectorHeight) + chessboardTranslateY;
+                //xyPix.x = (corner.x + 1.0f) / 2.0f * projectorWidth;
+                //xyPix.y = (1.0f - corner.y) / 2.0f * projectorHeight;
+				xyPix.x = ((corner.x + 1.0f) / 2.0f * projectorWidth) + chessboardTranslateX;
+				xyPix.y = ((1.0f - corner.y) / 2.0f * projectorHeight) + chessboardTranslateY;
 				out.push_back(xyPix);
 			}
 		return out;
