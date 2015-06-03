@@ -40,12 +40,12 @@ void ofApp::setup(){
     contourFinder.setInvert(false);
     
     // make the wrapper (to make calibration independant of the drivers...)
-    RGBDCamCalibWrapper* kinectWrapper = new RGBDCamCalibWrapperOfxKinect();
+    kinectWrapper = new RGBDCamCalibWrapperOfxKinect();
     kinectWrapper->setup(&kinect);
     kinectProjectorCalibration.setup(kinectWrapper, projectorWidth, projectorHeight);
     
     // some default config
-    kinectProjectorCalibration.setStabilityTimeInMs(700);
+    kinectProjectorCalibration.setStabilityTimeInMs(500);
     maxReprojError = 2.0f;
     
     // sets the output
@@ -160,26 +160,25 @@ void ofApp::draw(){
         //draw the calibrated contours to our second window
         secondWindow.begin();
         ofClear(0);
-        ofSetColor(255);
-        ofSetLineWidth(3);
+        ofSetColor(255, 190, 70);
         
         for (int i = 0; i < contourFinder.size(); i++) {
             
-            vector<cv::Point> blobPoints = contourFinder.getContour(i);
-            
-            for (int j = 0; j < blobPoints.size() - 1; j++) {
-                
-                // we get our original points
-                ofPoint originalFrom = toOf(blobPoints[j]);
-                ofPoint originalTo = toOf(blobPoints[j+1]);
-                
-                // we project from our depth xy to projector space
-                ofPoint projectedFrom = kinectProjectorOutput.projectFromDepthXY(originalFrom);
-                ofPoint projectedTo =   kinectProjectorOutput.projectFromDepthXY(originalTo);
-                
-                ofLine(projectedFrom, projectedTo);
+            ofPolyline blobContour = contourFinder.getPolyline(i);
+            if(!blobContour.isClosed()){
+                blobContour.close();
             }
+            
+            ofBeginShape();
+            for (int j = 0; j < blobContour.size() - 1; j++) {
+                ofPoint currVertex = kinectProjectorOutput.projectFromDepthXY(blobContour[j]);
+                ofVertex(currVertex.x, currVertex.y);
+                
+            }
+            ofEndShape();
+            
         }
+        ofSetColor(255);
         secondWindow.end();
     }
     ofTranslate(-320,0);

@@ -67,7 +67,6 @@ class ofApp : public ofBaseApp{
         void guiUpdateLabels();
         
         // second window
-        void setupSecondWindow();
         ofxSecondWindow             secondWindow;
 		
 };
