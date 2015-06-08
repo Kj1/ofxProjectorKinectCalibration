@@ -28,7 +28,7 @@ KinectProjectorCalibration::KinectProjectorCalibration() {
 	calibrated = false;
 
 	chessboardFound = false;
-	fastCheckResize = 0.5;
+	fastCheckResize = 1.0;
     chessboardSize = 200;
 	chessboardColor = 125;
 	kinectColorImage.allocate(640,480);
@@ -47,7 +47,7 @@ void	KinectProjectorCalibration::setup(RGBDCamCalibWrapper* _kinect, int _projec
 
 bool	KinectProjectorCalibration::doFastCheck(){
 	if (!isReady) return false;
-	ofxCvColorImage colorImg = kinect->getColorImageCalibrated();
+	ofxCvColorImage colorImg = kinect->getColorImageCalibrated(mirrorHoriz, mirrorVert);
 	colorImg.resize(colorImg.width*fastCheckResize,colorImg.height * fastCheckResize);
 	Mat colorImage = toCv(colorImg);
 	pointBufFastCheck.clear();
@@ -87,7 +87,7 @@ void	KinectProjectorCalibration::addCurrentFrame(){
 	stableFrom = -1;
 
 	//gets the DEPTH/RGB CALIBRATED color image
-	kinectColorImage = kinect->getColorImageCalibrated();
+	kinectColorImage = kinect->getColorImageCalibrated(mirrorHoriz, mirrorVert);
 	Mat colorImage = toCv(kinectColorImage);
 	
 	//setup for finding chessboards
@@ -241,7 +241,7 @@ bool KinectProjectorCalibration::clean(float maxReprojectionError) {
 			return true;
 		}
 	} else {
-		ofLog(OF_LOG_ERROR, "KinectProjectorCalibration::clean() removed the last object/image point pair");
+		ofLog(OF_LOG_WARNING, "KinectProjectorCalibration::clean() removed the last object/image point pair");
         calibrated = false;
 		return false;
 	}
@@ -291,18 +291,23 @@ void KinectProjectorCalibration::setChessboardTranslation(float x, float y) {
 	chessboard.setTranslation(x, y);
 }
 
+void KinectProjectorCalibration::setMirrors(bool horizontal, bool vertical) {
+	mirrorHoriz = horizontal;
+	mirrorVert = vertical;
+}
+
 void KinectProjectorCalibration::save(string filename, bool absolute) const {
 	if (worldCoordinatesChessboardBuffer.size() < 1) { 
 		return;
 	}
 
-	FileStorage fs(ofToDataPath(filename, absolute), FileStorage::WRITE);
-	fs << "intrisics" << cameraMatrix;
-	fs << "projResX" << projectorResolutionX;
-	fs << "projResY" << projectorResolutionY;
-	fs << "rotation" << boardRotations[0];
-	fs << "translation" << boardTranslations[0];
-	fs << "reprojectionError" << reprojError;
+    FileStorage fs(ofToDataPath(filename, absolute), FileStorage::WRITE);
+    fs << "intrisics" << cameraMatrix;
+    fs << "projResX" << projectorResolutionX;
+    fs << "projResY" << projectorResolutionY;
+    fs << "rotation" << boardRotations[0];
+    fs << "translation" << boardTranslations[0];
+    fs << "reprojectionError" << reprojError;
 }
 
 

@@ -53,6 +53,7 @@ class KinectProjectorCalibration {
 		int		getDatabaseSize();
         void    setStabilityTimeInMs(int stabilityTime);
         void    setChessboardTranslation(float x, float y);
+        void    setMirrors(bool horizontal, bool vertical);
 
 		//Gui stuff
 		void	drawChessboard();
@@ -87,6 +88,7 @@ class KinectProjectorCalibration {
 		float				fastCheckResize;
         int                 hasToBeStableFor;
 		long				stableFrom;
+        bool                mirrorVert, mirrorHoriz;
 
 		//calibrationResults
 		float				reprojError;

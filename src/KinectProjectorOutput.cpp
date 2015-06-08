@@ -27,7 +27,7 @@ bool KinectProjectorOutput::isCalibrationReady() {
 
 ofPoint KinectProjectorOutput::projectFromDepthXY(const ofPoint o) const {
 	if (!isReady) return ofPoint(0,0);
-	ofPoint ptWorld = kinect->getWorldFromRgbCalibrated(o);
+	ofPoint ptWorld = kinect->getWorldFromRgbCalibrated(o, mirrorHoriz, mirrorVert);
 	vector<cv::Point3f> vo;
 	vo.push_back(cv::Point3f(ptWorld.x, ptWorld.y, ptWorld.z));	
 	Mat mt = boardTranslations[0];
@@ -99,20 +99,25 @@ float KinectProjectorOutput::getReprojectionError() const {
 	return reprojError;
 }
 
+void KinectProjectorOutput::setMirrors(bool horizontal, bool vertical) {
+    mirrorHoriz = horizontal;
+    mirrorVert = vertical;
+}
+
 bool KinectProjectorOutput::load(string path, bool absolute) {
-	FileStorage fs(ofToDataPath(path, absolute), FileStorage::READ);
-	cv::Mat	rvec, tvec;
+    FileStorage fs(ofToDataPath(path, absolute), FileStorage::READ);
+    cv::Mat	rvec, tvec;
     fs["intrisics"] >> cameraMatrix;
     fs["projResX"] >> projectorResolutionX;
-	fs["projResY"] >> projectorResolutionY;
+    fs["projResY"] >> projectorResolutionY;
     fs["rotation"] >> rvec;
     fs["translation"] >> tvec;
-	fs["reprojectionError"] >>  reprojError;
+    fs["reprojectionError"] >>  reprojError;
     intrinsics.setup(cameraMatrix, Size2i(projectorResolutionX, projectorResolutionY));
-    modelMatrix = makeMatrix(rvec, tvec);    
-	boardRotations.push_back(rvec);
-	boardTranslations.push_back(tvec);
-	distCoeffs = Mat::zeros(8, 1, CV_64F);
+    modelMatrix = makeMatrix(rvec, tvec);
+    boardRotations.push_back(rvec);
+    boardTranslations.push_back(tvec);
+    distCoeffs = Mat::zeros(8, 1, CV_64F);
 
     isReady = true;
 	return true;

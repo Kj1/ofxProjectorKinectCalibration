@@ -26,7 +26,7 @@ public:
 		chessboardSizeY = 6;
         chessboardTranslateX = 0;
         chessboardTranslateY = 0;
-		scale = 0.75; 
+		scale = 0.5;
 		color = ofColor(255);
 	}
 
