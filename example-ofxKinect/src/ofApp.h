@@ -19,7 +19,6 @@ class ofApp : public ofBaseApp{
 
 	public:
 		void setup();
-    
 		void update();
 		void draw();
         void exit();
@@ -52,8 +51,11 @@ class ofApp : public ofBaseApp{
         // output
         KinectProjectorOutput		kinectProjectorOutput;
         bool						enableTestmode;
-        
-        float                       threshold;
+        float                       chessboardThreshold;
+        ofImage						thresholdedKinect;
+        float                       lowThresh;
+        float                       highThresh;
+        int							blur;
         float                       maxReprojError;
     
         // settings
@@ -62,7 +64,8 @@ class ofApp : public ofBaseApp{
         
         // gui
         void setupGui();
-        ofxUICanvas *               gui;
+        ofxUISuperCanvas *          gui;
+        ofxUISuperCanvas *			guiImageSettings;
         void guiEvent(ofxUIEventArgs &e);
         void guiUpdateLabels();
         
