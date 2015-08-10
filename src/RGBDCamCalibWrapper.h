@@ -30,9 +30,9 @@ public:
 	virtual void				setup(void* backend) = 0;
 
 	//getting the calibrated color/depth image
-	virtual ofxCvColorImage		getColorImageCalibrated()= 0;    //////
+	virtual ofxCvColorImage		getColorImageCalibrated(bool mirrorHoriz = false, bool mirrorVert = false)= 0;    //////
 
 	//coordinate getters
-	virtual ofPoint				getWorldFromRgbCalibrated(ofPoint)= 0; ///
+	virtual ofPoint				getWorldFromRgbCalibrated(ofPoint p, bool mirrorHoriz = false, bool mirrorVert = false)= 0; ///
 
 };

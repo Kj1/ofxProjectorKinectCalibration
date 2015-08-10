@@ -31,6 +31,7 @@ class KinectProjectorOutput {
 
 		//getters & setters		
 		float	getReprojectionError() const;
+        void    setMirrors(bool horizontal, bool vertical);
 
 
 
@@ -42,6 +43,7 @@ class KinectProjectorOutput {
 		//other
 		RGBDCamCalibWrapper* kinect;
 		bool				isReady;
+        bool                mirrorVert, mirrorHoriz;
 
 		//calibrationResults
 		float				reprojError;
